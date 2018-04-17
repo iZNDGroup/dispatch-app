@@ -1,0 +1,77 @@
+{
+  "name": "dispatch-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "eslint": "eslint app",
+    "prettier": "prettier --write \"app/**/*.js\""
+  },
+  "dependencies": {
+    "@terrylinla/react-native-sketch-canvas": "^0.3.1",
+    "moment": "^2.17.1",
+    "prop-types": "^15.6.0",
+    "react": "16.0.0-alpha.6",
+    "react-native": "^0.44.0",
+    "react-native-calendar": "^0.13.1",
+    "react-native-cookie": "^0.1.1",
+    "react-native-deprecated-custom-components": "^0.1.0",
+    "react-native-device-info": "^0.12.1",
+    "react-native-dialogs": "^0.0.19",
+    "react-native-fcm": "^9.3.0",
+    "react-native-fetch-blob": "^0.10.8",
+    "react-native-file-opener": "^0.2.0",
+    "react-native-fs": "^2.8.1",
+    "react-native-i18n": "^2.0.8",
+    "react-native-image-picker": "^0.26.7",
+    "react-native-maps": "^0.15.2",
+    "react-native-parallax-scroll-view": "^0.19.0",
+    "react-native-photo-view": "^1.5.2",
+    "react-native-scrollable-tab-view": "^0.6.0",
+    "react-native-swipeable": "^0.3.3",
+    "react-native-vector-icons": "^4.0.1",
+    "react-redux": "^5.0.4",
+    "redux": "^3.6.0",
+    "redux-saga": "^0.15.3",
+    "reselect": "^3.0.0",
+    "rxjs": "^5.3.0",
+    "timm": "^1.2.3"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-jest": "^20.0.3",
+    "babel-preset-react-native": "^1.9.2",
+    "deep-freeze": "0.0.1",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.7.0",
+    "jest": "^20.0.3",
+    "prettier": "^1.12.1",
+    "react-test-renderer": "16.0.0-alpha.6",
+    "standard": "^10.0.2"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupTestFrameworkScriptFile": "./setupTestFrameworkScriptFile.js",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@gpsgate)/"
+    ]
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "globals": [
+      "jest",
+      "describe",
+      "it",
+      "expect",
+      "beforeEach",
+      "afterEach",
+      "beforeAll",
+      "afterAll",
+      "fetch"
+    ]
+  }
+}
