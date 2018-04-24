@@ -1,28 +1,22 @@
 import { parseJson } from "./util";
 
 class RpcClient {
-  constructor() {
-    this.requestCounter = 0;
-  }
-
   async request(service, method, params = {}, responseHandler = null) {
     if (!this.baseUrl) {
       throw new Error("You must call login() before request().");
     }
     params.appId = this.applicationId;
-    let response = await fetch(this.baseUrl + "/comGpsGate/rpc/" + service, {
-      // credentials: 'include',
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "X-JSON-RPC": method
-      },
-      body: JSON.stringify({
-        id: ++this.requestCounter,
-        method: method,
-        params: params
-      })
-    });
+    let response = await fetch(
+      this.baseUrl + "/comGpsGate/rpc/" + service + "/v.1/" + method,
+      {
+        // credentials: 'include',
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify(params)
+      }
+    );
     if (!response.ok) {
       throw new Error(`Request error. Response status: ${response.status}`);
     }

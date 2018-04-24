@@ -1,7 +1,7 @@
 import RpcClient from "./client/RpcClient";
 import { CustomFieldNamespaceMap } from "./constants";
 
-const service = "DispatchFuture";
+const service = "Dispatch";
 
 export const subscribeToUser = async (
   subscriptionId,
