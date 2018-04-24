@@ -2,39 +2,52 @@ import moment from "moment";
 import { createReducer, createOptimisticReducer } from "../util/redux";
 import { collection, object } from "../util/immutable";
 import * as actions from "../actions";
-import { JobStateMap } from "../services/constants";
+import {
+  JobStateMap,
+  Dispatched,
+  Active,
+  Completed
+} from "../services/constants";
 
 const byIdReducer = createOptimisticReducer(
   {},
   {
     [actions.batchAddJobs]: (state, action) => {
       const newState = action.payload.reduce((obj, job) => {
-        const oldJob = collection.getIn(state, [job.id]) || {};
-        let newJob;
-        if (oldJob.originalJobOnly) {
-          newJob = object.merge(oldJob, {
-            originalJob: job.hasOwnProperty("createdTime") ? job : null // isFull
-          });
-        } else {
-          newJob = object.merge(oldJob, {
-            id: job.id,
-            title: job.description,
-            description: job.comment,
-            location: getLocation(job.startLocation),
-            scheduledTime: job.scheduledTime ? moment(job.scheduledTime) : null,
-            date: moment(job.scheduledTime || job.completedTime || undefined),
-            status: JobStateMap[job.jobState],
-            customFields: getCustomFields(job.customFields),
-            routeId: job.routeID,
-            originalJob: job.hasOwnProperty("createdTime") ? job : null, // isFull,
-            commentItems: job.commentItems
-          });
-          newJob = object.addDefaults(newJob, {
-            hidden: false,
-            new: false
-          });
+        if (
+          job.jobState === Dispatched ||
+          job.jobState === Active ||
+          job.jobState === Completed
+        ) {
+          const oldJob = collection.getIn(state, [job.id]) || {};
+          let newJob;
+          if (oldJob.originalJobOnly) {
+            newJob = object.merge(oldJob, {
+              originalJob: job.hasOwnProperty("createdTime") ? job : null // isFull
+            });
+          } else {
+            newJob = object.merge(oldJob, {
+              id: job.id,
+              title: job.description,
+              description: job.comment,
+              location: getLocation(job.startLocation),
+              scheduledTime: job.scheduledTime
+                ? moment(job.scheduledTime)
+                : null,
+              date: moment(job.scheduledTime || job.completedTime || undefined),
+              status: JobStateMap[job.jobState],
+              customFields: getCustomFields(job.customFields),
+              routeId: job.routeID,
+              originalJob: job.hasOwnProperty("createdTime") ? job : null, // isFull,
+              commentItems: job.commentItems
+            });
+            newJob = object.addDefaults(newJob, {
+              hidden: false,
+              new: false
+            });
+          }
+          obj[job.id] = newJob;
         }
-        obj[job.id] = newJob;
         return obj;
       }, {});
       return object.merge(state, newState);

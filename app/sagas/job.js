@@ -4,7 +4,7 @@ import { showToast, showDialog } from "../util/ui";
 import moment from "moment";
 import * as actions from "../actions";
 import * as jobsSelector from "../selectors/jobs";
-import { Assigned, Active, Completed } from "../services/constants";
+import { Dispatched, Active, Completed } from "../services/constants";
 import { getReplaySubject, waitForAction } from "../services/push";
 import * as dispatchService from "../services/dispatch";
 import RNFetchBlob from "react-native-fetch-blob";
@@ -115,7 +115,7 @@ function* pauseJob(action) {
     const jobId = action.payload;
     const job = yield getJob(jobId);
     const updatedJob = object.merge(job.originalJob, {
-      jobState: Assigned
+      jobState: Dispatched
     });
     const { subject, unsubscribe } = getReplaySubject();
     try {
