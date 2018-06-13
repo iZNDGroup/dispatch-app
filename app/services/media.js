@@ -27,7 +27,7 @@ export const downloadFileSagaHelper = (
         // I chose to emit actions immediately
         _params.progress = progress;
         emitter({
-          type: progressAction.type, // 'job/downloadMediaCustomFiledFileProgress',
+          type: progressAction.type, // 'job/downloadMediaCustomFieldFileProgress',
           payload: _params
         });
       })
@@ -35,12 +35,12 @@ export const downloadFileSagaHelper = (
         // the temp file path
         _params.filePath = res.path().split("|")[0];
         emitter({
-          type: resolveAction.type, // 'job/downloadMediaCustomFiledFile/resolve',
+          type: resolveAction.type, // 'job/downloadMediaCustomFieldFile/resolve',
           payload: _params
         });
         _params.progress = null;
         emitter({
-          type: progressAction.type, // 'job/downloadMediaCustomFiledFileProgress',
+          type: progressAction.type, // 'job/downloadMediaCustomFieldFileProgress',
           payload: _params
         });
         emitter(END);
@@ -53,7 +53,7 @@ export const downloadFileSagaHelper = (
         });
         _params.progress = null;
         emitter({
-          type: progressAction.type, // 'job/downloadMediaCustomFiledFileProgress',
+          type: progressAction.type, // 'job/downloadMediaCustomFieldFileProgress',
           payload: _params
         });
         emitter(END);
@@ -86,13 +86,31 @@ export const uploadFileSagaHelper = (
       // var prefixIndex = url.indexOf("file:///")
       cleanUri = _params.filePath.substring("file:///".length);
     }
-    var uploadable;
+    //var uploadable;
     //var binary;
-    if (_params.filePath === "base64") {
+    /*if (_params.filePath === "base64") {
       uploadable = _params.uploadableFile.replace(/\n|\r/g, "");
       _params.uploadableFile = undefined;
       //_params.filePath="data:image/png;base64,"+uploadable
+    }*/
+
+    var rnfbFile = {};
+
+    if (_params.filePath === "base64") {
+      rnfbFile.name = _params.filename;
+      rnfbFile.filename = _params.filename;
+      rnfbFile.data = _params.uploadableFile.replace(/\n|\r/g, "");
+      rnfbFile.type = "image/png;BASE64";
+    } else {
+      rnfbFile.name = _params.filename;
+      rnfbFile.filename = _params.filename;
+      rnfbFile.data = RNFetchBlob.wrap(cleanUri);
     }
+
+    let params = {
+      appId: _params.appId,
+      "Content-Type": "multipart/form-data"
+    };
 
     RNFetchBlob.config({
       // add this option that makes response data to be stored as a file,
@@ -100,16 +118,8 @@ export const uploadFileSagaHelper = (
       // path: filePath,
       // fileCache: true,
     })
-      .fetch("POST", url, _params, [
-        {
-          name: _params.filename,
-          filename: _params.filename,
-          type: "image/png;BASE64",
-          data:
-            _params.filePath !== "base64"
-              ? RNFetchBlob.wrap(cleanUri)
-              : uploadable
-        },
+      .fetch("POST", url, params, [
+        rnfbFile,
         { name: "joborrouteid", data: _params.joborrouteid },
         { name: "type", data: _params.type },
         { name: "appId", data: _params.appId },
@@ -127,7 +137,8 @@ export const uploadFileSagaHelper = (
       })
       .then(res => {
         // the temp file path
-        // _params.filePath = res.path();
+        //_params.filePath = res.path();
+        //console.debug(_params);
         emitter({
           type: resolveAction.type,
           payload: _params

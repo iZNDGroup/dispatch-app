@@ -10,6 +10,7 @@ export default {
 
   orange: "#F8A356",
   green: "#52CC91",
+  red: "#BA003F",
 
   biggestTextSize: 20,
   biggerTextSize: 16,

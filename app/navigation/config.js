@@ -8,6 +8,7 @@ import CalendarList from "../components/CalendarList";
 import MapView from "../components/MapView";
 import LoginView from "../components/LoginView";
 import Signature from "../components/Signature";
+import CustomFieldPhotoView from "../components/CustomFieldPhotoView";
 
 const _createTab = (id, component, name, icon) => ({
   id,
@@ -35,6 +36,8 @@ const _createRoute = (id, component, props = undefined, gestures = true) => ({
 export const routes = {
   jobList: () => _createRoute("jobList", JobList),
   signature: onSave => _createRoute("signature", Signature, { onSave }, false),
+  photoView: payload =>
+    _createRoute("photoView", CustomFieldPhotoView, { ...payload }, false),
   jobView: (id, showActions = true) =>
     _createRoute("jobView", JobViewContainer, { id, showActions }),
   calendarList: () => _createRoute("calendarList", CalendarList),

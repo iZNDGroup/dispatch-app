@@ -45,7 +45,7 @@ export default class JobsTab extends Component {
   _renderScene = (route, navigator) => {
     return renderScene(route, navigator, component => {
       this._currentComponent = component
-        ? component.getWrappedInstance()
+        ? component.getWrappedInstance() // component.getWrappedInstance && component.getWrappedInstance()
         : null;
     });
   };

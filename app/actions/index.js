@@ -40,20 +40,20 @@ export const finishJobDialog = createAction("job/finishJobDialog");
 export const finishJob = createOptimisticAction("job/finishJob");
 export const hideJob = createAction("job/hideJob");
 export const saveCustomField = createOptimisticAction("job/saveCustomField");
-export const downloadMediaCustomFiledFile = createOptimisticAction(
-  "job/downloadMediaCustomFiledFile"
+export const downloadMediaCustomFieldFile = createOptimisticAction(
+  "job/downloadMediaCustomFieldFile"
 );
-export const downloadMediaCustomFiledFileProgress = createAction(
-  "job/downloadMediaCustomFiledFileProgress"
+export const downloadMediaCustomFieldFileProgress = createAction(
+  "job/downloadMediaCustomFieldFileProgress"
 );
-export const uploadMediaCustomFiledFileProgress = createAction(
-  "job/uploadMediaCustomFiledFileProgress"
+export const uploadMediaCustomFieldFileProgress = createAction(
+  "job/uploadMediaCustomFieldFileProgress"
 );
-export const downloadMediaCustomFiledThumbnails = createOptimisticAction(
-  "job/downloadMediaCustomFiledThumbnails"
+export const downloadMediaCustomFieldThumbnails = createOptimisticAction(
+  "job/downloadMediaCustomFieldThumbnails"
 );
-export const uploadMediaCustomFiledFile = createOptimisticAction(
-  "job/uploadMediaCustomFiledFile"
+export const uploadMediaCustomFieldFile = createOptimisticAction(
+  "job/uploadMediaCustomFieldFile"
 );
 export const downloadAndOpenWithExternalApp = createAction(
   "job/downloadAndOpenWithExternalApp"

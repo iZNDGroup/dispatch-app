@@ -74,7 +74,7 @@ const byIdReducer = createOptimisticReducer(
         }, {})
       );
     },
-    [actions.downloadMediaCustomFiledFileProgress]: (state, action) => {
+    [actions.downloadMediaCustomFieldFileProgress]: (state, action) => {
       const { joborrouteid, fieldid } = action.payload;
       return collection.setIn(
         state,
@@ -82,7 +82,7 @@ const byIdReducer = createOptimisticReducer(
         action.payload.progress
       );
     },
-    [actions.uploadMediaCustomFiledFileProgress]: (state, action) => {
+    [actions.uploadMediaCustomFieldFileProgress]: (state, action) => {
       const { joborrouteid, fieldid } = action.payload;
       return collection.setIn(
         state,
@@ -132,7 +132,7 @@ const byIdReducer = createOptimisticReducer(
         customFieldValue
       );
     },
-    [actions.downloadMediaCustomFiledFile.resolve]: (state, action) => {
+    [actions.downloadMediaCustomFieldFile.resolve]: (state, action) => {
       const { joborrouteid, fieldid } = action.payload;
       return collection.setIn(
         state,
@@ -140,7 +140,7 @@ const byIdReducer = createOptimisticReducer(
         action.payload.filePath
       );
     },
-    [actions.downloadMediaCustomFiledFile.reject]: (state, action) => {
+    [actions.downloadMediaCustomFieldFile.reject]: (state, action) => {
       const { joborrouteid, fieldid, error } = action.payload;
       return collection.setIn(
         state,
@@ -148,7 +148,7 @@ const byIdReducer = createOptimisticReducer(
         { error: error }
       );
     },
-    [actions.downloadMediaCustomFiledFile.init]: (state, action) => {
+    [actions.downloadMediaCustomFieldFile.init]: (state, action) => {
       const { jobId, fieldid } = action.payload;
       var obj = state;
 
@@ -170,7 +170,7 @@ const byIdReducer = createOptimisticReducer(
       }
       return obj;
     },
-    [actions.downloadMediaCustomFiledThumbnails.resolve]: (state, action) => {
+    [actions.downloadMediaCustomFieldThumbnails.resolve]: (state, action) => {
       const { joborrouteid, fieldid } = action.payload;
       return collection.setIn(
         state,
@@ -178,7 +178,7 @@ const byIdReducer = createOptimisticReducer(
         action.payload.filePath
       );
     },
-    [actions.downloadMediaCustomFiledThumbnails.reject]: (state, action) => {
+    [actions.downloadMediaCustomFieldThumbnails.reject]: (state, action) => {
       const { joborrouteid, fieldid, error } = action.payload;
       return collection.setIn(
         state,
@@ -186,10 +186,10 @@ const byIdReducer = createOptimisticReducer(
         { error: error }
       );
     },
-    [actions.downloadMediaCustomFiledThumbnails.init]: (state, action) => {
+    [actions.downloadMediaCustomFieldThumbnails.init]: (state, action) => {
       return collection.setIn(state, ["customFieldsThumbnails"], null);
     },
-    [actions.uploadMediaCustomFiledFile.resolve]: (state, action) => {
+    [actions.uploadMediaCustomFieldFile.resolve]: (state, action) => {
       const { joborrouteid, fieldid } = action.payload;
       return collection.setIn(
         state,
@@ -197,7 +197,7 @@ const byIdReducer = createOptimisticReducer(
         100
       );
     },
-    [actions.uploadMediaCustomFiledFile.reject]: (state, action) => {
+    [actions.uploadMediaCustomFieldFile.reject]: (state, action) => {
       const { joborrouteid, fieldid, error } = action.payload;
       return collection.setIn(
         state,
@@ -205,7 +205,7 @@ const byIdReducer = createOptimisticReducer(
         { error: error }
       );
     },
-    [actions.uploadMediaCustomFiledFile.init]: (state, action) => {
+    [actions.uploadMediaCustomFieldFile.init]: (state, action) => {
       return collection.setIn(
         state,
         ["customFieldsUploadProgress"],

@@ -43,7 +43,15 @@ export default class NavigationBar extends Component {
         </Touchable>
       );
     } else {
-      return this._renderBar();
+      if (this.props.leftAction) {
+        return (
+          <Touchable onPress={this.props.leftAction}>
+            {this._renderBar()}
+          </Touchable>
+        );
+      } else {
+        return this._renderBar();
+      }
     }
   }
 }

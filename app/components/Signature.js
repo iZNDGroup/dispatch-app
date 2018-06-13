@@ -1,77 +1,47 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
+import { StyleSheet, View } from "react-native";
+import globalStyles from "../styles/global";
+import NavigationBar from "./NavigationBar";
+import SignatureActionButtons from "./SignatureActionButtons";
 import { SketchCanvas } from "@terrylinla/react-native-sketch-canvas";
 
-export default class Signature extends React.Component {
+class Signature extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      signid: String(Math.ceil(Math.random() * 100000000))
+      signid: String(Math.ceil(Math.random() * 100000000)),
+      thickness: 5
     };
   }
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection: "row" }} {...this.props}>
-        <View style={{ flex: 1, flexDirection: "column" }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity
-                style={styles.functionButton}
-                onPress={() => {
-                  this.setState({ thickness: 10 });
-                }}
-              >
-                <Text style={{ color: "white" }}>Thick</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.functionButton}
-                onPress={() => {
-                  this.setState({ thickness: 5 });
-                }}
-              >
-                <Text style={{ color: "white" }}>Thin</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <SketchCanvas
-            ref={ref => (this.canvas = ref)}
-            style={{ flex: 1 }}
-            strokeColor={this.state.color}
-            strokeWidth={this.state.thickness}
-            onStrokeStart={() => {
-              console.debug("start");
-            }}
-            onStrokeChanged={() => {
-              console.debug("changed");
-            }}
-            onStrokeEnd={() => {
-              console.debug("end");
-            }}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}
-          >
-            <TouchableOpacity
-              style={[
-                styles.functionButton,
-                { backgroundColor: "black", width: 90 }
-              ]}
-              onPress={() => {
-                this.canvas.getBase64("png", false, (err, result) => {
-                  this._onSaveEvent(err, result);
-                });
-              }}
-            >
-              <Text style={{ color: "white" }}>Finish</Text>
-            </TouchableOpacity>
+      <View style={styles.container}>
+        <NavigationBar
+          title="Signature"
+          leftIcon="md-arrow-back"
+          leftAction={this._goBack}
+        />
+        <SignatureActionButtons
+          onSave={() => {
+            this.canvas.getBase64("png", false, (err, result) => {
+              this._onSaveEvent(err, result);
+            });
+          }}
+          onClear={() => {
+            this.canvas.clear();
+          }}
+        />
+        <View style={{ flex: 1, flexDirection: "row" }} {...this.props}>
+          <View style={{ flex: 1, flexDirection: "column" }}>
+            <SketchCanvas
+              ref={ref => (this.canvas = ref)}
+              style={{ flex: 1 }}
+              strokeColor={this.state.color}
+              strokeWidth={this.state.thickness}
+            />
           </View>
         </View>
       </View>
@@ -105,9 +75,7 @@ Signature.contextTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: globalStyles.primaryBackgroundColor
   },
   strokeColorButton: {
     marginHorizontal: 2.5,
@@ -137,3 +105,14 @@ const styles = StyleSheet.create({
     borderRadius: 5
   }
 });
+
+const mapStateToProps = (initialState, initialProps) => {
+  let stateToProps = {};
+  return stateToProps;
+};
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true
+})(Signature);

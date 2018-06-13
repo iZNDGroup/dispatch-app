@@ -51,6 +51,7 @@
 		7A3704BACF1F4A679259213B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5812BE3030764EC1ABB006DD /* libRNVectorIcons.a */; };
 		827CA269103942AB82AEDC5A /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B55665918CD848B8944F7F03 /* Entypo.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		97BC634A9A9647B6B99F6571 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C56C78DCE54B4A7FA0ABE482 /* libRCTCamera.a */; };
 		980430713D114389BBFB1A4E /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 356C68D1FF1246718C8042EF /* Octicons.ttf */; };
 		9E4D70625D0B4989BB499F41 /* libRNPhotoView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE022D778D14485AD02542F /* libRNPhotoView.a */; };
 		B3665C9A00684CA081B036D7 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ED3C6AF4007E425190202D84 /* MaterialCommunityIcons.ttf */; };
@@ -349,35 +350,35 @@
 			remoteGlobalIDString = E72EC1401F7ABB5A0001BC90;
 			remoteInfo = "RNDeviceInfo-tvOS";
 		};
-		CDE88EB020864CD400E413D9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 978CED64E292403FB9B97813 /* RNFS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
-			remoteInfo = RNFS;
-		};
-		CDE88EB220864CD400E413D9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 978CED64E292403FB9B97813 /* RNFS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6456441F1EB8DA9100672408;
-			remoteInfo = "RNFS-tvOS";
-		};
-		CDE88EB720864CD400E413D9 /* PBXContainerItemProxy */ = {
+		CDE952C8208755E50070BCAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2D0B0A31F59C4B48837FC44D /* RNPhotoView.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNPhotoView;
 		};
-		CDE88EBC20864CD400E413D9 /* PBXContainerItemProxy */ = {
+		CDE952CE208755E50070BCAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 978CED64E292403FB9B97813 /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
+		CDE952D0208755E50070BCAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 978CED64E292403FB9B97813 /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6456441F1EB8DA9100672408;
+			remoteInfo = "RNFS-tvOS";
+		};
+		CDE952D5208755E50070BCAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 288D063B52F84C60B23A693D /* RNSketchCanvas.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = DEFBA2581F322B6000A4545C;
 			remoteInfo = RNSketchCanvas;
 		};
-		CDE88EC120864CD400E413D9 /* PBXContainerItemProxy */ = {
+		CDE952DA208755E50070BCAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2F472FAB6EBD4B5488423C9F /* RNFileOpener.xcodeproj */;
 			proxyType = 2;
@@ -481,6 +482,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				7A3704BACF1F4A679259213B /* libRNVectorIcons.a in Frameworks */,
+				97BC634A9A9647B6B99F6571 /* libRCTCamera.a in Frameworks */,
 				6B798C466B08472C9C6AD2B7 /* libRNCookieManager.a in Frameworks */,
 				57799A8DE8CD46FEAE77B831 /* libAirMaps.a in Frameworks */,
 				3D784F26B58047F687346A7E /* libRNFIRMessaging.a in Frameworks */,
@@ -836,35 +838,35 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CDE88EAC20864CD400E413D9 /* Products */ = {
+		CDE952C5208755E40070BCAD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CDE88EB120864CD400E413D9 /* libRNFS.a */,
-				CDE88EB320864CD400E413D9 /* libRNFS.a */,
+				CDE952C9208755E50070BCAD /* libRNPhotoView.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CDE88EB420864CD400E413D9 /* Products */ = {
+		CDE952CA208755E50070BCAD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CDE88EB820864CD400E413D9 /* libRNPhotoView.a */,
+				CDE952CF208755E50070BCAD /* libRNFS.a */,
+				CDE952D1208755E50070BCAD /* libRNFS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CDE88EB920864CD400E413D9 /* Products */ = {
+		CDE952D2208755E50070BCAD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CDE88EBD20864CD400E413D9 /* libRNSketchCanvas.a */,
+				CDE952D6208755E50070BCAD /* libRNSketchCanvas.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CDE88EBE20864CD400E413D9 /* Products */ = {
+		CDE952D7208755E50070BCAD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CDE88EC220864CD400E413D9 /* libRNFileOpener.a */,
+				CDE952DB208755E50070BCAD /* libRNFileOpener.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1079,7 +1081,7 @@
 					ProjectRef = 03860AEC856E40CAA58C89E1 /* RNFetchBlob.xcodeproj */;
 				},
 				{
-					ProductGroup = CDE88EBE20864CD400E413D9 /* Products */;
+					ProductGroup = CDE952D7208755E50070BCAD /* Products */;
 					ProjectRef = 2F472FAB6EBD4B5488423C9F /* RNFileOpener.xcodeproj */;
 				},
 				{
@@ -1091,7 +1093,7 @@
 					ProjectRef = B58054721FB1DF530091B8A6 /* RNFS.xcodeproj */;
 				},
 				{
-					ProductGroup = CDE88EAC20864CD400E413D9 /* Products */;
+					ProductGroup = CDE952CA208755E50070BCAD /* Products */;
 					ProjectRef = 978CED64E292403FB9B97813 /* RNFS.xcodeproj */;
 				},
 				{
@@ -1103,11 +1105,11 @@
 					ProjectRef = 6AC05E32021447FB90150741 /* RNImagePicker.xcodeproj */;
 				},
 				{
-					ProductGroup = CDE88EB420864CD400E413D9 /* Products */;
+					ProductGroup = CDE952C5208755E40070BCAD /* Products */;
 					ProjectRef = 2D0B0A31F59C4B48837FC44D /* RNPhotoView.xcodeproj */;
 				},
 				{
-					ProductGroup = CDE88EB920864CD400E413D9 /* Products */;
+					ProductGroup = CDE952D2208755E50070BCAD /* Products */;
 					ProjectRef = 288D063B52F84C60B23A693D /* RNSketchCanvas.xcodeproj */;
 				},
 				{
@@ -1399,39 +1401,39 @@
 			remoteRef = CDDFCD581FAC7711008C3FE3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CDE88EB120864CD400E413D9 /* libRNFS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNFS.a;
-			remoteRef = CDE88EB020864CD400E413D9 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CDE88EB320864CD400E413D9 /* libRNFS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNFS.a;
-			remoteRef = CDE88EB220864CD400E413D9 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		CDE88EB820864CD400E413D9 /* libRNPhotoView.a */ = {
+		CDE952C9208755E50070BCAD /* libRNPhotoView.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNPhotoView.a;
-			remoteRef = CDE88EB720864CD400E413D9 /* PBXContainerItemProxy */;
+			remoteRef = CDE952C8208755E50070BCAD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CDE88EBD20864CD400E413D9 /* libRNSketchCanvas.a */ = {
+		CDE952CF208755E50070BCAD /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = CDE952CE208755E50070BCAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDE952D1208755E50070BCAD /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = CDE952D0208755E50070BCAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDE952D6208755E50070BCAD /* libRNSketchCanvas.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNSketchCanvas.a;
-			remoteRef = CDE88EBC20864CD400E413D9 /* PBXContainerItemProxy */;
+			remoteRef = CDE952D5208755E50070BCAD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CDE88EC220864CD400E413D9 /* libRNFileOpener.a */ = {
+		CDE952DB208755E50070BCAD /* libRNFileOpener.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNFileOpener.a;
-			remoteRef = CDE88EC120864CD400E413D9 /* PBXContainerItemProxy */;
+			remoteRef = CDE952DA208755E50070BCAD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

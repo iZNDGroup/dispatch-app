@@ -24,16 +24,16 @@ export default function* jobSaga() {
     takeEvery(actions.finishJob.init, finishJob),
     takeEvery(actions.saveCustomField.init, saveCustomField),
     takeEvery(
-      actions.downloadMediaCustomFiledFile.init,
-      downloadMediaCustomFiledFile
+      actions.downloadMediaCustomFieldFile.init,
+      downloadMediaCustomFieldFile
     ),
     takeEvery(
-      actions.downloadMediaCustomFiledThumbnails.init,
-      downloadMediaCustomFiledThumbnails
+      actions.downloadMediaCustomFieldThumbnails.init,
+      downloadMediaCustomFieldThumbnails
     ),
     takeEvery(
-      actions.uploadMediaCustomFiledFile.init,
-      uploadMediaCustomFiledFile
+      actions.uploadMediaCustomFieldFile.init,
+      uploadMediaCustomFieldFile
     ),
     takeEvery(
       actions.downloadAndOpenWithExternalApp,
@@ -206,7 +206,7 @@ function* saveCustomField(action) {
   });
 }
 
-function* downloadMediaCustomFiledThumbnails(action) {
+function* downloadMediaCustomFieldThumbnails(action) {
   try {
     var separatorIndex = action.payload.filename.lastIndexOf(".");
     var filename =
@@ -241,9 +241,9 @@ function* downloadMediaCustomFiledThumbnails(action) {
 
     params.filePath = res.path();
 
-    yield put(actions.downloadMediaCustomFiledThumbnails.resolve(params));
+    yield put(actions.downloadMediaCustomFieldThumbnails.resolve(params));
   } catch (err) {
-    console.debug("### <- downloadMediaCustomFiledThumbnails error", err);
+    console.debug("### <- downloadMediaCustomFieldThumbnails error", err);
     throw err;
   }
 }
@@ -322,9 +322,9 @@ function* downloadAndOpenWithExternalApp(action) {
       params,
       url,
       filePath,
-      actions.downloadMediaCustomFiledFileProgress,
+      actions.downloadMediaCustomFieldFileProgress,
       actions.openFileWithExternalApp,
-      actions.downloadMediaCustomFiledFile.reject
+      actions.downloadMediaCustomFieldFile.reject
     );
     try {
       while (true) {
@@ -332,20 +332,20 @@ function* downloadAndOpenWithExternalApp(action) {
         yield put(action);
       }
     } catch (error) {
-      put(actions.downloadMediaCustomFiledFile.reject(error));
+      put(actions.downloadMediaCustomFieldFile.reject(error));
     } finally {
       // Optional
     }
 
     params.filePath = filePath;
 
-    yield put(actions.downloadMediaCustomFiledFile.resolve(params));
+    yield put(actions.downloadMediaCustomFieldFile.resolve(params));
   } catch (err) {
     throw err;
   }
 }
 
-function* downloadMediaCustomFiledFile(action) {
+function* downloadMediaCustomFieldFile(action) {
   try {
     const params = {
       fieldid: action.payload.fieldid,
@@ -366,9 +366,9 @@ function* downloadMediaCustomFiledFile(action) {
       params,
       url,
       filePath,
-      actions.downloadMediaCustomFiledFileProgress,
-      actions.downloadMediaCustomFiledFile.resolve,
-      actions.downloadMediaCustomFiledFile.reject
+      actions.downloadMediaCustomFieldFileProgress,
+      actions.downloadMediaCustomFieldFile.resolve,
+      actions.downloadMediaCustomFieldFile.reject
     );
     try {
       while (true) {
@@ -376,20 +376,20 @@ function* downloadMediaCustomFiledFile(action) {
         yield put(action);
       }
     } catch (error) {
-      put(actions.downloadMediaCustomFiledFile.reject(error));
+      put(actions.downloadMediaCustomFieldFile.reject(error));
     } finally {
       // Optional
     }
 
     params.filePath = filePath;
 
-    yield put(actions.downloadMediaCustomFiledFile.resolve(params));
+    yield put(actions.downloadMediaCustomFieldFile.resolve(params));
   } catch (err) {
     throw err;
   }
 }
 
-function* uploadMediaCustomFiledFile(action) {
+function* uploadMediaCustomFieldFile(action) {
   try {
     const params = {
       fieldid: action.payload.fieldid,
@@ -409,9 +409,9 @@ function* uploadMediaCustomFiledFile(action) {
       uploadFileSagaHelper,
       params,
       url,
-      actions.uploadMediaCustomFiledFileProgress,
-      actions.downloadMediaCustomFiledFile.resolve,
-      actions.downloadMediaCustomFiledFile.reject
+      actions.uploadMediaCustomFieldFileProgress,
+      actions.uploadMediaCustomFieldFile.resolve,
+      actions.uploadMediaCustomFieldFile.reject
     );
     try {
       while (true) {
@@ -419,12 +419,11 @@ function* uploadMediaCustomFiledFile(action) {
         yield put(action);
       }
     } catch (error) {
-      put(actions.downloadMediaCustomFiledFile.reject(error));
+      put(actions.uploadMediaCustomFieldFile.reject(error));
     } finally {
-      // Optional
     }
   } catch (err) {
-    console.debug("### <- uploadMediaCustomFiledFile error", err);
+    console.debug("### <- uploadMediaCustomFieldFile error", err);
     throw err;
   }
 }

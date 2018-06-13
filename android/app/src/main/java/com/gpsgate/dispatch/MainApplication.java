@@ -12,6 +12,7 @@ import com.airbnb.android.react.maps.MapsPackage;
 import com.aakashns.reactnativedialogs.ReactNativeDialogsPackage;
 import im.shimo.react.cookie.CookieManagerPackage;
 import com.rnfs.RNFSPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -48,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativeDialogsPackage(),
             new CookieManagerPackage(),
             new RNFSPackage(),
+            new RCTCameraPackage(),
             new FileOpenerPackage(),
             new PhotoViewPackage(),
             new SketchCanvasPackage() 

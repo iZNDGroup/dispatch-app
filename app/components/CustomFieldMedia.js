@@ -6,14 +6,12 @@ import {
   Platform,
   Image,
   Button,
-  Modal,
   TouchableHighlight
 } from "react-native";
 import { connect } from "react-redux";
 import customFieldStyles from "../styles/customField";
 import { routes } from "../navigation/config";
 import * as actions from "../actions";
-import PhotoView from "react-native-photo-view";
 
 class CustomFieldMedia extends Component {
   constructor(props) {
@@ -21,7 +19,8 @@ class CustomFieldMedia extends Component {
     this.state = {
       ...props,
       cfNamespace: props.cfNamespace,
-      isOpenedModalImage: false
+      isOpenedModalImage: false,
+      isNewUploadedFileAvailable: false
     };
   }
 
@@ -47,7 +46,7 @@ class CustomFieldMedia extends Component {
         filename: this.props.value,
         cfNamespace: this.props.cfNamespace
       };
-      this.props.downloadMediaCustomFiledThumbnails(payload);
+      this.props.downloadMediaCustomFieldThumbnails(payload);
     }
   }
 
@@ -88,24 +87,26 @@ class CustomFieldMedia extends Component {
     this.props.downloadAndOpenWithExternalApp(payload);
   };
 
-  _openModalImage = () => {
+  _openImage = () => {
+    const navigator = this.props.navigator;
+    const props = this.props;
+    var payload = {
+      fieldid: props.id,
+      jobOrRouteId: props.jobOrRouteId.toString(),
+      filename: props.value,
+      cfNamespace: props.cfNamespace
+    };
     if (
-      this.props.imgurl === null ||
-      this.props.imgurl === undefined ||
-      this.props.imgurl.trim() === ""
+      props.imgurl === null ||
+      props.imgurl === undefined ||
+      props.imgurl.trim() === "" ||
+      this.state.isNewUploadedFileAvailable === true
     ) {
-      var payload = {
-        fieldid: this.props.id,
-        jobOrRouteId: this.props.jobOrRouteId.toString(),
-        filename: this.props.value,
-        cfNamespace: this.props.cfNamespace
-      };
-
-      this.props.downloadMediaCustomFiledFile(payload);
+      props.downloadMediaCustomFieldFile(payload);
     }
-    this.setState({
-      isOpenedModalImage: true
-    });
+    if (navigator) {
+      navigator.push(routes.photoView(payload));
+    }
   };
 
   _closeModalImage = () => {
@@ -140,13 +141,13 @@ class CustomFieldMedia extends Component {
           }
         }
       } else {
+        response.uri = response.path;
         this._saveMedia(response);
       }
     });
   };
 
   _saveMedia = response => {
-    let source = { uri: response.uri };
     var payload = {
       fieldid: this.props.id,
       jobOrRouteId: this.props.jobOrRouteId.toString(),
@@ -155,12 +156,10 @@ class CustomFieldMedia extends Component {
       uploadFile: response.data,
       filePath: response.uri
     };
-    this.props.uploadMediaCustomFiledFile(payload);
-
+    this.props.uploadMediaCustomFieldFile(payload);
     this.props.onSave && this.props.onSave(response.fileName);
-
     this.setState({
-      avatarSource: source
+      isNewUploadedFileAvailable: true
     });
   };
 
@@ -177,24 +176,28 @@ class CustomFieldMedia extends Component {
         ? url.indexOf("content://") >= 0 || url.indexOf("file://") >= 0
         : false;
 
-      if (!iscontentType) {
+      if (!iscontentType && this.props.imgurl !== "base64") {
         url = "file://" + this.props.imgurl;
       }
       if (Platform.OS === "android" && !iscontentType) {
         thumbnailUrl = "file://" + thumbnailUrl;
       }
+      if (this.props.imgurl === "base64") {
+        url = undefined; // todo: base64 coded image to here
+        thumbnailUrl = undefined;
+      }
 
       return (
         <View style={customFieldStyles.mediaFieldContainer}>
           <TouchableHighlight
-            onPress={this._openModalImage}
+            onPress={this._openImage}
             style={customFieldStyles.mediaFieldTitle}
           >
             <Text style={customFieldStyles.mediaFieldTitleText}>
               {this.props.label}
             </Text>
           </TouchableHighlight>
-          <TouchableHighlight onPress={this._openModalImage}>
+          <TouchableHighlight onPress={this._openImage}>
             <Image
               source={{ isStatic: true, uri: thumbnailUrl }}
               style={{ width: "100%", height: 200 }}
@@ -213,41 +216,6 @@ class CustomFieldMedia extends Component {
               style={customFieldStyles.mediaUploadButton}
             />
           )}
-          <Modal
-            visible={this.state.isOpenedModalImage}
-            transparent={false}
-            onRequestClose={this._closeModalImage}
-          >
-            <Button title="Close" onPress={this._closeModalImage} />
-            {!this.props.imgurl && (
-              <View
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  backgroundColor: "#000000"
-                }}
-              >
-                <Text style={customFieldStyles.modalLoadingText}>
-                  Loading {this.props.progress}%
-                </Text>
-              </View>
-            )}
-            {!!this.props.imgurl && (
-              <PhotoView
-                source={{ uri: url }}
-                minimumZoomScale={0.5}
-                maximumZoomScale={5}
-                androidScaleType="fitCenter"
-                onViewTap={this._closeModalImage}
-                onLoad={() => console.debug("image loaded")}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  backgroundColor: "#000000"
-                }}
-              />
-            )}
-          </Modal>
         </View>
       );
     } else {
@@ -342,13 +310,15 @@ const mapStateToProps = (initialState, initialProps) => {
               initialProps.jobOrRouteId
             ][initialProps.id]
           : null,
-      progress: initialState.jobs.byId.progress
-        ? parseFloat(
-            initialState.jobs.byId.progress[initialProps.jobOrRouteId][
-              initialProps.id
-            ]
-          ).toFixed(1)
-        : null,
+      progress:
+        initialState.jobs.byId.progress &&
+        initialState.jobs.byId.progress[initialProps.jobOrRouteId]
+          ? parseFloat(
+              initialState.jobs.byId.progress[initialProps.jobOrRouteId][
+                initialProps.id
+              ]
+            ).toFixed(1)
+          : null,
       uploadprogress:
         initialState.jobs.byId.uploadprogress &&
         initialState.jobs.byId.uploadprogress[initialProps.jobOrRouteId] &&
@@ -398,10 +368,10 @@ const mapStateToProps = (initialState, initialProps) => {
 };
 
 const mapDispatchToProps = {
-  downloadMediaCustomFiledThumbnails:
-    actions.downloadMediaCustomFiledThumbnails.init,
-  downloadMediaCustomFiledFile: actions.downloadMediaCustomFiledFile.init,
-  uploadMediaCustomFiledFile: actions.uploadMediaCustomFiledFile.init,
+  downloadMediaCustomFieldThumbnails:
+    actions.downloadMediaCustomFieldThumbnails.init,
+  downloadMediaCustomFieldFile: actions.downloadMediaCustomFieldFile.init,
+  uploadMediaCustomFieldFile: actions.uploadMediaCustomFieldFile.init,
   downloadAndOpenWithExternalApp: actions.downloadAndOpenWithExternalApp
 };
 
