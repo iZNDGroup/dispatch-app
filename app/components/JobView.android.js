@@ -57,7 +57,7 @@ export default class JobView extends Component {
               <View style={styles.fieldsContainer}>
                 {customFields.map(field => (
                   <CustomField
-                    key={field.id}
+                    key={`customField-${field.id}`}
                     {...field}
                     cfNamespace={"job"}
                     jobOrRouteId={job.id}

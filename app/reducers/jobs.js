@@ -191,8 +191,18 @@ const byIdReducer = createOptimisticReducer(
     },
     [actions.uploadMediaCustomFieldFile.resolve]: (state, action) => {
       const { joborrouteid, fieldid } = action.payload;
-      return collection.setIn(
+      let state2 = collection.setIn(
         state,
+        ["customFieldsFiles", joborrouteid, fieldid],
+        action.payload.filePath
+      );
+      state2 = collection.setIn(
+        state2,
+        ["customFieldsThumbnails", joborrouteid, fieldid],
+        action.payload.filePath
+      );
+      return collection.setIn(
+        state2,
         ["customFieldsUploadProgress", joborrouteid, fieldid],
         100
       );

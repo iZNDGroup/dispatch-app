@@ -1,5 +1,6 @@
 import { AsyncStorage, Platform } from "react-native";
 import { updateFCMToken, removeFCMToken } from "./dispatch";
+import { appendLog } from "./logging";
 
 const asyncStorageKey = "fcmToken";
 
@@ -24,7 +25,8 @@ const getToken = async () => {
     const value = await AsyncStorage.getItem(asyncStorageKey);
     return value;
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Failed to read from fcmToken storage", err);
+    appendLog("Failed to read from fcmToken storage", err);
     return null;
   }
 };
@@ -33,7 +35,8 @@ const setToken = async token => {
   try {
     await AsyncStorage.setItem(asyncStorageKey, token);
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Failed to write to fcmToken storage", err);
+    appendLog("Failed to write to fcmToken storage", err);
   }
 };
 
@@ -41,7 +44,8 @@ const removeToken = async () => {
   try {
     await AsyncStorage.removeItem(asyncStorageKey);
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Failed to remove from fcmToken storage", err);
+    appendLog("Failed to remove from fcmToken storage", err);
   }
 };
 

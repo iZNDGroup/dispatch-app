@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { localize } from "../util/localize";
 import globalStyles from "../styles/global";
 
 export default class SignatureActionButtons extends Component {
@@ -15,7 +16,7 @@ export default class SignatureActionButtons extends Component {
           >
             <Icon name="md-document" style={styles.icon} />
           </TouchableOpacity>
-          <Text>Clear</Text>
+          <Text>{localize("Clear")}</Text>
         </View>
         <View style={styles.action}>
           <TouchableOpacity
@@ -25,7 +26,7 @@ export default class SignatureActionButtons extends Component {
           >
             <Icon name="ios-checkmark" style={styles.icon} />
           </TouchableOpacity>
-          <Text>Save</Text>
+          <Text>{localize("Save")}</Text>
         </View>
       </View>
     );

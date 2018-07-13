@@ -1,5 +1,6 @@
 import { delay } from "redux-saga";
 import { call, spawn, all, cancel } from "redux-saga/effects";
+import { appendLog } from "../services/logging";
 
 export function* spawnWithRetry(saga) {
   const task = yield spawn(callWithRetry, saga);
@@ -17,6 +18,7 @@ function* callWithRetry(saga) {
     try {
       if (isRetry) {
         console.debug("saga retry", saga.name);
+        appendLog("saga retry", saga.name);
         isRetry = false;
       }
       setTimeout(setErrorType);
@@ -24,10 +26,12 @@ function* callWithRetry(saga) {
       break;
     } catch (err) {
       if (isSyncError) {
-        // console.debug("saga sync error", saga.name, err.message);
+        console.debug("saga sync error", saga.name, err.message);
+        appendLog("saga sync error", saga.name, err.message);
         throw new Error("saga sync error - " + saga.name + " - " + err.message);
       } else {
         console.debug("saga async error. retrying...", saga.name, err);
+        appendLog("saga async error. retrying...", saga.name, err);
         isRetry = true;
       }
     }

@@ -1,20 +1,27 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { StyleSheet, Animated } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 import ScrollableTabView from "react-native-scrollable-tab-view";
+import { tabs } from "../navigation/config";
+import globalStyles from "../styles/global";
+import { configurePhraseBook } from "../util/localize";
 import NetInfo from "./NetInfo";
 import TabBar from "./TabBar";
-import globalStyles from "../styles/global";
-import { tabs } from "../navigation/config";
 
 export default class MainView extends Component {
   constructor(props) {
     super(props);
-    this.state = { fadeAnim: new Animated.Value(0) };
+    this.state = {
+      languageLoaded: false,
+      fadeAnim: new Animated.Value(0)
+    };
   }
 
   componentDidMount() {
-    Animated.timing(this.state.fadeAnim, { toValue: 1 }).start();
+    configurePhraseBook().then(() => {
+      this.setState({ languageLoaded: true });
+      Animated.timing(this.state.fadeAnim, { toValue: 1 }).start();
+    });
   }
 
   toggleTabBar = show => {
@@ -67,6 +74,9 @@ export default class MainView extends Component {
   }
 
   render() {
+    if (!this.state.languageLoaded) {
+      return null;
+    }
     return (
       <Animated.View
         style={[styles.container, { opacity: this.state.fadeAnim }]}

@@ -1,6 +1,7 @@
 import { AsyncStorage } from "react-native";
 import Cookie from "react-native-cookie";
 import RpcClient from "./client/RpcClient";
+import { appendLog } from "./logging";
 
 const asyncStorageKey = "userData";
 
@@ -32,7 +33,8 @@ export const getUserData = async () => {
     value = JSON.parse(value);
     return value;
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Failed to read from userData storage", err);
+    appendLog("Failed to read from userData storage", err);
     return null;
   }
 };
@@ -42,7 +44,8 @@ const setUserData = async value => {
     value = JSON.stringify(value);
     await AsyncStorage.setItem(asyncStorageKey, value);
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Failed to write to userData storage", err);
+    appendLog("Failed to write to userData storage", err);
   }
 };
 
@@ -50,6 +53,7 @@ const removeUserData = async () => {
   try {
     await AsyncStorage.removeItem(asyncStorageKey);
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Failed to remove from userData storage", err);
+    appendLog("Failed to remove from userData storage", err);
   }
 };

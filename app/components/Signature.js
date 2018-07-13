@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, View } from "react-native";
 import globalStyles from "../styles/global";
+import { localize } from "../util/localize";
 import NavigationBar from "./NavigationBar";
 import SignatureActionButtons from "./SignatureActionButtons";
 import { SketchCanvas } from "@terrylinla/react-native-sketch-canvas";
@@ -20,7 +21,7 @@ class Signature extends React.Component {
     return (
       <View style={styles.container}>
         <NavigationBar
-          title="Signature"
+          title={localize("Signature")}
           leftIcon="md-arrow-back"
           leftAction={this._goBack}
         />

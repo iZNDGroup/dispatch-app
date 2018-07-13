@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import moment from "moment";
+import { localize } from "../util/localize";
 import TouchableIcon from "./TouchableIcon";
 import globalStyles from "../styles/global";
 
@@ -109,7 +110,7 @@ export default class JobItem extends Component {
 
     const statusIcon = statusIcons[this.props.job.status];
     const statusColor = statusColors[this.props.job.status];
-    const statusText = statusTexts[this.props.job.status];
+    const statusText = localize(statusTexts[this.props.job.status]);
 
     const bgColor = this.colorValue.interpolate({
       inputRange: [0, 1],

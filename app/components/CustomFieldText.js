@@ -9,6 +9,7 @@ import {
   Platform
 } from "react-native";
 import { showAlert } from "../util/ui";
+import { localize } from "../util/localize";
 import TouchableIcon from "./TouchableIcon";
 import customFieldStyles from "../styles/customField";
 import globalStyles from "../styles/global";
@@ -31,10 +32,10 @@ export default class CustomFieldText extends Component {
     const url = action + ":" + this._stripNumber(value);
     Linking.canOpenURL(url).then(canOpen => {
       if (!canOpen) {
-        showAlert("Could not make phone call.");
+        showAlert(localize("Could not make phone call"));
       } else {
         Linking.openURL(url).catch(err =>
-          showAlert("Could not make phone call.")
+          showAlert(localize("Could not make phone call"))
         );
       }
     });

@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  Platform,
-  Image,
-  Button,
-  TouchableHighlight
-} from "react-native";
+import PropTypes from "prop-types";
+import { TouchableWithoutFeedback, Platform } from "react-native";
 import { connect } from "react-redux";
-import customFieldStyles from "../styles/customField";
+import CustomFieldImageCard from "./CustomFieldImageCard";
+import CustomFieldVideoCard from "./CustomFieldVideoCard";
+import CustomFieldPdfCard from "./CustomFieldPdfCard";
+import CustomFieldDownloadCard from "./CustomFieldDownloadCard";
+import CustomFieldEmptyCard from "./CustomFieldEmptyCard";
+import { localize } from "../util/localize";
 import { routes } from "../navigation/config";
+import * as indexSelector from "../selectors";
 import * as actions from "../actions";
 
 class CustomFieldMedia extends Component {
@@ -20,13 +19,14 @@ class CustomFieldMedia extends Component {
       ...props,
       cfNamespace: props.cfNamespace,
       isOpenedModalImage: false,
-      isNewUploadedFileAvailable: false
+      isNewUploadedFileAvailable: false,
+      thumbImgUrl: this.props.thumbImgUrl
     };
   }
 
   // Run after component loaded, if the actual content is an image, otherwise it will download it, by the button push
   componentDidMount() {
-    var imageExtensions = [
+    const imageExtensions = [
       "jpg",
       "gif",
       "png",
@@ -40,7 +40,7 @@ class CustomFieldMedia extends Component {
       this.props.value &&
       imageExtensions.indexOf(this.props.value.split(".").pop()) >= 0
     ) {
-      var payload = {
+      const payload = {
         fieldid: this.props.id,
         jobOrRouteId: this.props.jobOrRouteId.toString(),
         filename: this.props.value,
@@ -49,6 +49,63 @@ class CustomFieldMedia extends Component {
       this.props.downloadMediaCustomFieldThumbnails(payload);
     }
   }
+
+  componentWillReceiveProps(nextProps) {
+    const imageExtensions = [
+      "jpg",
+      "gif",
+      "png",
+      "bmp",
+      "JPG",
+      "GIF",
+      "PNG",
+      "BMP"
+    ];
+    if (
+      nextProps.value &&
+      this.props.value !== nextProps.value &&
+      imageExtensions.indexOf(nextProps.value.split(".").pop()) >= 0
+    ) {
+      const payload = {
+        fieldid: nextProps.id,
+        jobOrRouteId: nextProps.jobOrRouteId.toString(),
+        filename: nextProps.value,
+        cfNamespace: nextProps.cfNamespace
+      };
+      this.props.downloadMediaCustomFieldThumbnails(payload);
+    }
+    if (
+      nextProps.value &&
+      nextProps.thumbImgUrl &&
+      this.state.thumbImgUrl !== nextProps.thumbImgUrl
+    ) {
+      this.setState({ thumbImgUrl: nextProps.thumbImgUrl });
+    }
+    if (!nextProps.value) {
+      this.setState({ thumbImgUrl: null });
+    }
+  }
+
+  _getFileTypeByName = filename => {
+    let extension = filename.split(".").pop();
+    if (
+      ["jpg", "gif", "png", "jpeg", "JPG", "GIF", "PNG", "JPEG"].indexOf(
+        extension
+      ) > -1
+    ) {
+      return "Image";
+    } else if (
+      ["mp4", "mp3", "ogv", "webm", "MP4", "MP3", "OGV", "WEBM"].indexOf(
+        extension
+      ) > -1
+    ) {
+      return "Video";
+    } else if (extension.toLowerCase() === "pdf") {
+      return "Pdf";
+    } else {
+      return "Other";
+    }
+  };
 
   _getMimeTypeByExtension = extension => {
     let mimetype = "";
@@ -78,7 +135,7 @@ class CustomFieldMedia extends Component {
   };
 
   onClickDownload = () => {
-    var payload = {
+    const payload = {
       fieldid: this.props.id,
       jobOrRouteId: this.props.jobOrRouteId.toString(),
       filename: this.props.value,
@@ -90,22 +147,44 @@ class CustomFieldMedia extends Component {
   _openImage = () => {
     const navigator = this.props.navigator;
     const props = this.props;
-    var payload = {
+    const payload = {
       fieldid: props.id,
       jobOrRouteId: props.jobOrRouteId.toString(),
       filename: props.value,
       cfNamespace: props.cfNamespace
     };
+    const cleanedLargeName =
+      this.props.imgurl && this.props.imgurl.split("/").pop();
+    const cleanedThumbName =
+      this.state.thumbImgUrl &&
+      this.state.thumbImgUrl
+        .split("/")
+        .pop()
+        .replace("_thumb", "");
     if (
       props.imgurl === null ||
       props.imgurl === undefined ||
       props.imgurl.trim() === "" ||
-      this.state.isNewUploadedFileAvailable === true
+      cleanedLargeName !== cleanedThumbName
     ) {
       props.downloadMediaCustomFieldFile(payload);
     }
     if (navigator) {
       navigator.push(routes.photoView(payload));
+    }
+  };
+
+  _openPdf = () => {
+    const navigator = this.props.navigator;
+    const props = this.props;
+    const payload = {
+      fieldid: props.id,
+      jobOrRouteId: props.jobOrRouteId.toString(),
+      filename: props.value,
+      cfNamespace: props.cfNamespace
+    };
+    if (navigator) {
+      navigator.push(routes.pdfView(payload));
     }
   };
 
@@ -116,11 +195,17 @@ class CustomFieldMedia extends Component {
   };
 
   _uploadNewContent = () => {
-    var ImagePicker = require("react-native-image-picker");
+    const ImagePicker = require("react-native-image-picker");
     // More info on all the options is below in the README...just some common use cases shown here
-    var options = {
-      title: "Select uploadable",
-      customButtons: [{ name: "signaturedraw", title: "Signature draw" }],
+    const options = {
+      title: localize("Select file"),
+      cancelButtonTitle: localize("Cancel"),
+      takePhotoButtonTitle: localize("Take photo"),
+      chooseFromLibraryButtonTitle: localize("Choose from library"),
+      customButtons: [
+        { name: "signaturedraw", title: localize("Signature draw") },
+        { name: "deleteMedia", title: localize("Delete media") }
+      ],
       storageOptions: {
         skipBackup: true,
         path: "images"
@@ -140,15 +225,34 @@ class CustomFieldMedia extends Component {
             navigator.push(routes.signature(this._saveMedia));
           }
         }
+
+        if (response.customButton === "deleteMedia") {
+          this.props.onSave("");
+        }
       } else {
-        response.uri = response.path;
-        this._saveMedia(response);
+        if (!response.didCancel) {
+          response.uri = response.path;
+          this._saveMedia(response);
+        }
       }
     });
   };
 
+  _getThumbImgUrl = () => {
+    if (this.props.imgurl) {
+      return this.props.imgurl;
+    }
+    if (this.props.thumbImgUrl) {
+      return this.props.thumbImgUrl;
+    }
+    if (this.state.thumbImgUrl) {
+      return this.state.thumbImgUrl;
+    }
+    return undefined;
+  };
+
   _saveMedia = response => {
-    var payload = {
+    const payload = {
       fieldid: this.props.id,
       jobOrRouteId: this.props.jobOrRouteId.toString(),
       cfNamespace: this.props.cfNamespace,
@@ -159,212 +263,122 @@ class CustomFieldMedia extends Component {
     this.props.uploadMediaCustomFieldFile(payload);
     this.props.onSave && this.props.onSave(response.fileName);
     this.setState({
-      isNewUploadedFileAvailable: true
+      isNewUploadedFileAvailable: true,
+      thumbImgUrl: response.uri
     });
   };
 
-  renderTextInput() {
-    if (
-      (this.props.imgurl !== undefined && this.props.imgurl !== null) ||
-      (this.props.thumbImgUrl !== undefined && this.props.thumbImgUrl !== null)
-    ) {
-      var url = this.props.imgurl;
-      var thumbnailUrl = this.props.imgurl
-        ? this.props.imgurl
-        : this.props.thumbImgUrl;
-      var iscontentType = url
-        ? url.indexOf("content://") >= 0 || url.indexOf("file://") >= 0
-        : false;
+  _renderImage = () => {
+    return (
+      <CustomFieldImageCard
+        key={"cfimage_" + this.props.id}
+        imgurl={this.props.imgurl}
+        onPress={this._openImage}
+        label={this.props.label}
+        cfNamespace={this.props.cfNamespace}
+        uploadNewContent={this._uploadNewContent}
+        uploadprogress={this.props.uploadprogress}
+        thumbnailUrl={this._getThumbImgUrl()}
+      />
+    );
+  };
 
-      if (!iscontentType && this.props.imgurl !== "base64") {
-        url = "file://" + this.props.imgurl;
-      }
-      if (Platform.OS === "android" && !iscontentType) {
-        thumbnailUrl = "file://" + thumbnailUrl;
-      }
-      if (this.props.imgurl === "base64") {
-        url = undefined; // todo: base64 coded image to here
-        thumbnailUrl = undefined;
-      }
+  _renderVideo = () => {
+    return (
+      <CustomFieldVideoCard
+        key={"cfvideo_" + this.props.id}
+        value={this.props.value}
+        onPress={this.onClickDownload}
+        label={this.props.label}
+        cfNamespace={this.props.cfNamespace}
+        uploadNewContent={this._uploadNewContent}
+        uploadprogress={this.props.uploadprogress}
+        progress={this.props.progress}
+      />
+    );
+  };
 
-      return (
-        <View style={customFieldStyles.mediaFieldContainer}>
-          <TouchableHighlight
-            onPress={this._openImage}
-            style={customFieldStyles.mediaFieldTitle}
-          >
-            <Text style={customFieldStyles.mediaFieldTitleText}>
-              {this.props.label}
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this._openImage}>
-            <Image
-              source={{ isStatic: true, uri: thumbnailUrl }}
-              style={{ width: "100%", height: 200 }}
-            />
-          </TouchableHighlight>
-          {this.props.cfNamespace === "job" && (
-            <Button
-              title={
-                this.props.uploadprogress !== null &&
-                this.props.uploadprogress !== undefined &&
-                this.props.uploadprogress !== "NaN"
-                  ? " Uploading...  " + this.props.uploadprogress + " %"
-                  : "Upload new media"
-              }
-              onPress={this._uploadNewContent}
-              style={customFieldStyles.mediaUploadButton}
-            />
-          )}
-        </View>
-      );
-    } else {
-      // if it is a video content
-      if (this.props.value !== undefined && this.props.value !== null) {
-        return (
-          <View>
-            <TouchableHighlight
-              onPress={this.onClickDownload}
-              style={customFieldStyles.mediaFieldTitle}
-            >
-              <Text style={customFieldStyles.mediaFieldTitleText}>
-                {this.props.progress !== null &&
-                this.props.progress !== undefined &&
-                this.props.progress !== "NaN"
-                  ? " loading video...  " + this.props.progress + " %"
-                  : this.props.label}
-              </Text>
-            </TouchableHighlight>
-            <TouchableHighlight onPress={this.onClickDownload}>
-              <Image
-                source={require("../resources/player.png")}
-                style={{ width: "100%", height: 200 }}
-              />
-            </TouchableHighlight>
-            {this.props.cfNamespace === "job" && (
-              <Button
-                title={
-                  this.props.uploadprogress !== null &&
-                  this.props.uploadprogress !== undefined &&
-                  this.props.uploadprogress !== "NaN"
-                    ? " Uploading...  " + this.props.uploadprogress + " %"
-                    : "Upload new media"
-                }
-                onPress={this._uploadNewContent}
-                style={customFieldStyles.mediaUploadButton}
-              />
-            )}
-          </View>
-        );
-      } else {
-        return (
-          <View>
-            <Text style={customFieldStyles.title}>{this.props.label}</Text>
-            {this.props.cfNamespace === "job" && (
-              <Button
-                title={
-                  this.props.uploadprogress !== null &&
-                  this.props.uploadprogress !== undefined &&
-                  this.props.uploadprogress !== "NaN"
-                    ? " Uploading...  " + this.props.uploadprogress + " %"
-                    : "Upload new media"
-                }
-                onPress={this._uploadNewContent}
-                style={customFieldStyles.mediaUploadButton}
-              />
-            )}
-          </View>
-        );
-      }
+  _renderPdf = () => {
+    return (
+      <CustomFieldPdfCard
+        key={"cfPdf_" + this.props.id}
+        onPress={this._openPdf}
+        value={this.props.value}
+        label={this.props.label}
+        cfNamespace={this.props.cfNamespace}
+        uploadNewContent={this._uploadNewContent}
+        uploadprogress={this.props.uploadprogress}
+      />
+    );
+  };
+
+  _renderOther = () => {
+    return (
+      <CustomFieldDownloadCard
+        key={"cfdownload_" + this.props.id}
+        value={this.props.value}
+        onPress={this.onClickDownload}
+        label={this.props.label}
+        cfNamespace={this.props.cfNamespace}
+        uploadNewContent={this._uploadNewContent}
+        uploadprogress={this.props.uploadprogress}
+        progress={this.props.progress}
+      />
+    );
+  };
+
+  _renderEmpty = () => {
+    return (
+      <CustomFieldEmptyCard
+        key={"cfempty_" + this.props.id}
+        label={this.props.label}
+        cfNamespace={this.props.cfNamespace}
+        uploadNewContent={this._uploadNewContent}
+        uploadprogress={this.props.uploadprogress}
+      />
+    );
+  };
+
+  renderMediaField() {
+    const fileType =
+      this.props.value && this._getFileTypeByName(this.props.value);
+
+    if (fileType === "Image") {
+      return this._renderImage(); // or even a new component
+    } else if (fileType === "Video") {
+      return this._renderVideo(); // or even a new component
+    } else if (fileType === "Pdf") {
+      return this._renderPdf(); // or even a new component
+    } else if (fileType === "Other") {
+      return this._renderOther(); // or even a new component
     }
+    return this._renderEmpty(); // or even a new component
   }
 
   render() {
     if (Platform.OS === "ios") {
       return (
         <TouchableWithoutFeedback onPress={() => this.input.focus()}>
-          {this.renderTextInput()}
+          {this.renderMediaField()}
         </TouchableWithoutFeedback>
       );
     } else {
-      return this.renderTextInput();
+      return this.renderMediaField();
     }
   }
 }
 
+CustomFieldMedia.defaultProps = {
+  showActions: false
+};
+
+CustomFieldMedia.contextTypes = {
+  tabBar: PropTypes.object
+};
+
 const mapStateToProps = (initialState, initialProps) => {
-  let stateToProps;
-  if (initialProps.cfNamespace === "job") {
-    stateToProps = {
-      imgurl:
-        initialState.jobs.byId.customFieldsFiles &&
-        initialState.jobs.byId.customFieldsFiles[initialProps.jobOrRouteId]
-          ? initialState.jobs.byId.customFieldsFiles[initialProps.jobOrRouteId][
-              initialProps.id
-            ]
-          : null,
-      thumbImgUrl:
-        initialState.jobs.byId.customFieldsThumbnails &&
-        initialState.jobs.byId.customFieldsThumbnails[initialProps.jobOrRouteId]
-          ? initialState.jobs.byId.customFieldsThumbnails[
-              initialProps.jobOrRouteId
-            ][initialProps.id]
-          : null,
-      progress:
-        initialState.jobs.byId.progress &&
-        initialState.jobs.byId.progress[initialProps.jobOrRouteId]
-          ? parseFloat(
-              initialState.jobs.byId.progress[initialProps.jobOrRouteId][
-                initialProps.id
-              ]
-            ).toFixed(1)
-          : null,
-      uploadprogress:
-        initialState.jobs.byId.uploadprogress &&
-        initialState.jobs.byId.uploadprogress[initialProps.jobOrRouteId] &&
-        initialState.jobs.byId.uploadprogress[initialProps.jobOrRouteId][
-          initialProps.id
-        ]
-          ? parseFloat(
-              initialState.jobs.byId.uploadprogress[initialProps.jobOrRouteId][
-                initialProps.id
-              ]
-            ).toFixed(1)
-          : null
-    };
-  } else {
-    stateToProps = {
-      imgurl:
-        initialState.jobs.byId.customFieldsFiles &&
-        initialState.jobs.byId.customFieldsFiles[initialProps.jobOrRouteId]
-          ? initialState.jobs.byId.customFieldsFiles[initialProps.jobOrRouteId][
-              initialProps.id
-            ]
-          : null,
-      thumbImgUrl:
-        initialState.jobs.byId.customFieldsThumbnails &&
-        initialState.jobs.byId.customFieldsThumbnails[initialProps.jobOrRouteId]
-          ? initialState.jobs.byId.customFieldsThumbnails[
-              initialProps.jobOrRouteId
-            ][initialProps.id]
-          : null,
-      progress: initialState.jobs.byId.progress
-        ? parseFloat(
-            initialState.jobs.byId.progress[initialProps.jobOrRouteId][
-              initialProps.id
-            ]
-          ).toFixed(1)
-        : null,
-      uploadprogress: initialState.jobs.byId.uploadprogress
-        ? parseFloat(
-            initialState.jobs.byId.uploadprogress[initialProps.jobOrRouteId][
-              initialProps.id
-            ]
-          ).toFixed(1)
-        : null
-    };
-  }
-  return stateToProps;
+  const { jobOrRouteId, id } = initialProps;
+  return state => indexSelector.getCfData(state, "job", jobOrRouteId, id);
 };
 
 const mapDispatchToProps = {
@@ -375,4 +389,6 @@ const mapDispatchToProps = {
   downloadAndOpenWithExternalApp: actions.downloadAndOpenWithExternalApp
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomFieldMedia);
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  withRef: true
+})(CustomFieldMedia);

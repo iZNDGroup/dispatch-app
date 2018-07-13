@@ -3,6 +3,8 @@ package com.gpsgate.dispatch;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.chirag.RNMail.RNMail;
+import org.wonday.pdf.RCTPdfView;
 import com.terrylinla.rnsketchcanvas.SketchCanvasPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
@@ -38,6 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNMail(),
+            new RCTPdfView(),
             new VectorIconsPackage(),
             new RNDeviceInfo(),
             new RNI18nPackage(),

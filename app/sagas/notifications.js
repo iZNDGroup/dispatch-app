@@ -4,6 +4,7 @@ import FCM, { FCMEvent } from "react-native-fcm";
 import { Platform } from "react-native";
 import * as actions from "../actions";
 import * as jobsSelector from "../selectors/jobs";
+import { appendLog } from "../services/logging";
 import { updateToken } from "../services/notifications";
 import * as navigationService from "../navigation/service";
 import { routes } from "../navigation/config";
@@ -39,7 +40,8 @@ export default function* notificationsSaga() {
       yield cancel(listenerTask);
     }
   } catch (err) {
-    console.debug("error", err);
+    console.debug("Notifications error", err);
+    appendLog("Notifications error", err);
   }
 }
 

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import RouteCard from "./RouteCard";
 import JobCard from "./JobCard";
+import { localize } from "../util/localize";
 import globalStyles from "../styles/global";
 
 export default class CardList extends Component {
@@ -25,6 +26,7 @@ export default class CardList extends Component {
           onStatusClick={this.props.onStatusClick}
           onToggleCustomFields={this.props.onToggleCustomFields}
           style={this.props.cardStyle}
+          navigator={this.props.navigator}
         />
       );
     }
@@ -38,7 +40,9 @@ export default class CardList extends Component {
         )}
         {!this.props.isLoading &&
           this.props.items.length === 0 && (
-            <Text style={styles.emptyText}>There are no jobs today</Text>
+            <Text style={styles.emptyText}>
+              {localize("There are no jobs today")}
+            </Text>
           )}
         {this.props.items.map(item => this._renderRow(item))}
       </View>

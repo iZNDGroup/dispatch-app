@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { appendLog } from "../logging";
+
 /** @license
  * eventsource.js
  * Available under MIT License (MIT)
@@ -188,7 +190,8 @@ const EventSourcePolyfill = (function(global) {
     } catch (error1) {
       // Safari 5.1.7, Opera 12
       // throw error1;
-      console.debug("### xhr.send error", error1);
+      console.debug("xhr.send error", error1);
+      appendLog("xhr.send error", error1);
     }
     if ("readyState" in xhr) {
       // workaround for Opera 12 issue with "progress" events
@@ -224,7 +227,8 @@ const EventSourcePolyfill = (function(global) {
     // setTimeout(function () {
     //   throw e;
     // }, 0);
-    console.debug("### throwError", e);
+    console.debug("EventSource throwError", e);
+    appendLog("EventSource throwError", e);
   }
 
   EventTarget.prototype.dispatchEvent = function(event) {
@@ -604,7 +608,7 @@ const EventSourcePolyfill = (function(global) {
     if (this.currentState !== WAITING) {
       if (!this.wasActivity) {
         // throwError(new Error("No activity within " + this.heartbeatTimeout + " milliseconds. Reconnecting."));
-        this.transport.cancel();
+        // this.transport.cancel();
       } else {
         this.wasActivity = false;
         var that = this;
@@ -666,7 +670,8 @@ const EventSourcePolyfill = (function(global) {
     } catch (error) {
       this.close();
       // throw error;
-      console.debug("### transport.open error", error);
+      console.debug("transport.open error", error);
+      appendLog("transport.open error", error);
     }
   };
 

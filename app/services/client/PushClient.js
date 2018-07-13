@@ -1,3 +1,4 @@
+import { appendLog } from "../logging";
 import EventSource from "./EventSource";
 import { parseJson } from "./util";
 
@@ -159,7 +160,7 @@ class PushClient {
   _subscribe(handle) {
     const url = this._buildUrl("subscribe", handle.ns, handle.subId, handle.id);
     try {
-      this._debug("subcribe", handle.ns, handle.subId, handle.id);
+      this._debug("subscribe", handle.ns, handle.subId, handle.id);
       fetch(url, { method: "POST" });
     } catch (error) {
       this._debug("subscribe error", error, url);
@@ -213,6 +214,7 @@ class PushClient {
   _debug(message, ...optionalParams) {
     if (PushClient.DEBUG) {
       console.debug(message, ...optionalParams);
+      appendLog(message, ...optionalParams);
     }
   }
 }

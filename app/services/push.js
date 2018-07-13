@@ -1,6 +1,7 @@
 import Rx from "rxjs/Rx";
-import PushClient from "./client/PushClient";
 import * as dispatchService from "../services/dispatch";
+import PushClient from "./client/PushClient";
+import { appendLog } from "./logging";
 
 let pushClient = null;
 let observable = null;
@@ -12,8 +13,9 @@ export const open = (baseUrl, applicationId) => {
   if (pushClient) {
     throw new Error("open");
   }
-  // console.debug("### pushService.open", baseUrl, applicationId);
-  // PushClient.DEBUG = true;
+  console.debug("pushService open", baseUrl, applicationId);
+  appendLog("pushService open", baseUrl, applicationId);
+  PushClient.DEBUG = true;
   pushClient = new PushClient(
     baseUrl,
     applicationId,
@@ -32,7 +34,8 @@ export const close = () => {
   if (!pushClient) {
     throw new Error("close");
   }
-  // console.debug("### pushService.close");
+  console.debug("pushService close");
+  appendLog("pushService close");
   clearSubscriptions();
   disposeObservable();
   pushClient.close();
@@ -43,7 +46,8 @@ const openCallback = () => {
   if (!subject) {
     throw new Error("openCallback");
   }
-  // console.debug("### pushService.openCallback");
+  console.debug("pushService openCallback");
+  appendLog("pushService openCallback");
   createObservable();
   subject.next({ action: "Open" });
 };
@@ -52,7 +56,8 @@ const errorCallback = () => {
   if (!subject) {
     throw new Error("errorCallback");
   }
-  // console.debug("### pushService.errorCallback");
+  console.debug("pushService errorCallback");
+  appendLog("pushService errorCallback");
   subject.next({ action: "Error" });
 };
 

@@ -52,6 +52,9 @@ export const uploadMediaCustomFieldFileProgress = createAction(
 export const downloadMediaCustomFieldThumbnails = createOptimisticAction(
   "job/downloadMediaCustomFieldThumbnails"
 );
+export const downloadMediaCustomFieldThumbnailProgress = createAction(
+  "job/downloadMediaCustomFieldThumbnailProgress"
+);
 export const uploadMediaCustomFieldFile = createOptimisticAction(
   "job/uploadMediaCustomFieldFile"
 );

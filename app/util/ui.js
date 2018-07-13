@@ -1,5 +1,6 @@
 import { Platform, ToastAndroid, AlertIOS } from "react-native";
 import DialogAndroid from "react-native-dialogs";
+import { localize } from "./localize";
 
 export const showToast = message => {
   if (Platform.OS === "android") {
@@ -14,19 +15,19 @@ export const showAlert = title => {
     if (Platform.OS === "ios") {
       AlertIOS.alert(title, null, [
         {
-          text: "Cancel",
+          text: localize("Cancel"),
           onPress: () => {
             reject(new Error("Cancel"));
           },
           style: "cancel"
         },
-        { text: "OK", onPress: resolve }
+        { text: localize("OK"), onPress: resolve }
       ]);
     } else {
       const options = {
         title: title,
-        positiveText: "OK",
-        negativeText: "Cancel",
+        positiveText: localize("OK"),
+        negativeText: localize("Cancel"),
         onNegative: () => {
           reject(new Error("Cancel"));
         }
@@ -43,19 +44,19 @@ export const showDialog = (title, hint) => {
     if (Platform.OS === "ios") {
       AlertIOS.prompt(title, null, [
         {
-          text: "Cancel",
+          text: localize("Cancel"),
           onPress: () => {
             reject(new Error("Cancel"));
           },
           style: "cancel"
         },
-        { text: "OK", onPress: resolve }
+        { text: localize("OK"), onPress: resolve }
       ]);
     } else {
       const options = {
         title: title,
-        positiveText: "OK",
-        negativeText: "Cancel",
+        positiveText: localize("OK"),
+        negativeText: localize("Cancel"),
         input: {
           hint: hint,
           callback: resolve

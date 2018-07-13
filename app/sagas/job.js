@@ -1,19 +1,20 @@
-import { take, takeEvery, put, call, all, select } from "redux-saga/effects";
-import { object } from "../util/immutable";
-import { showToast, showDialog } from "../util/ui";
 import moment from "moment";
+import RNFetchBlob from "react-native-fetch-blob";
+import { take, takeEvery, put, call, all, select } from "redux-saga/effects";
 import * as actions from "../actions";
 import * as jobsSelector from "../selectors/jobs";
-import { Dispatched, Active, Completed } from "../services/constants";
-import { getReplaySubject, waitForAction } from "../services/push";
-import * as dispatchService from "../services/dispatch";
-import RNFetchBlob from "react-native-fetch-blob";
-import callOptimisticAction from "./callOptimisticAction";
 import RpcClient from "../services/client/RpcClient";
+import { Dispatched, Active, Completed } from "../services/constants";
+import * as dispatchService from "../services/dispatch";
 import {
   downloadFileSagaHelper,
   uploadFileSagaHelper
 } from "../services/media";
+import { getReplaySubject, waitForAction } from "../services/push";
+import { object } from "../util/immutable";
+import { localize } from "../util/localize";
+import { showToast, showDialog } from "../util/ui";
+import callOptimisticAction from "./callOptimisticAction";
 
 export default function* jobSaga() {
   yield all([
@@ -101,7 +102,7 @@ function* startJob(action) {
         take(actions.batchAddJobs)
       ]);
       yield put(actions.startJob.resolve(action.payload));
-      yield call(showToast, "Job started");
+      yield call(showToast, localize("Job started"));
     } catch (err) {
       yield put(actions.startJob.reject(err));
     } finally {
@@ -125,7 +126,7 @@ function* pauseJob(action) {
         take(actions.batchAddJobs)
       ]);
       yield put(actions.pauseJob.resolve(action.payload));
-      yield call(showToast, "Job paused");
+      yield call(showToast, localize("Job paused"));
     } catch (err) {
       yield put(actions.pauseJob.reject(err));
     } finally {
@@ -137,7 +138,11 @@ function* pauseJob(action) {
 function* finishJobDialog(action) {
   const jobId = action.payload;
   try {
-    const val = yield call(showDialog, "Finish job?", "Job note");
+    const val = yield call(
+      showDialog,
+      localize("Finish job?"),
+      localize("Job note")
+    );
     yield put(actions.finishJob.init({ id: jobId, description: val }));
   } catch (err) {}
 }
@@ -166,7 +171,7 @@ function* finishJob(action) {
         take(actions.batchAddJobs)
       ]);
       yield put(actions.finishJob.resolve(action.payload));
-      yield call(showToast, "Job finished");
+      yield call(showToast, localize("Job finished"));
     } catch (err) {
       yield put(actions.finishJob.reject(err));
     } finally {
@@ -197,7 +202,7 @@ function* saveCustomField(action) {
         take(actions.batchAddJobs)
       ]);
       yield put(actions.saveCustomField.resolve(action.payload));
-      yield call(showToast, "Job saved");
+      yield call(showToast, localize("Job saved"));
     } catch (err) {
       yield put(actions.saveCustomField.reject(err));
     } finally {
@@ -222,26 +227,28 @@ function* downloadMediaCustomFieldThumbnails(action) {
       fieldKey: action.payload.fieldid,
       filePath: null
     };
+
     let dirs = RNFetchBlob.fs.dirs;
-    const req = RNFetchBlob.config({
-      // add this option that makes response data to be stored as a file,
-      // this is much more performant.
-      fileCache: true,
-      // appendExt : ext,
-      path: dirs.DocumentDir + "/" + filename
-    });
+    let url = RpcClient.baseUrl + "/comGpsGate/rpc/DispatchMediaDownload";
+    let filePath = dirs.DocumentDir + "/" + filename;
 
-    const res = yield call(
-      [req, req.fetch],
-      "POST",
-      RpcClient.baseUrl + "/comGpsGate/rpc/DispatchMediaDownload",
-      params
+    const channel = yield call(
+      downloadFileSagaHelper,
+      params,
+      url,
+      filePath,
+      actions.downloadMediaCustomFieldThumbnailProgress,
+      actions.downloadMediaCustomFieldThumbnails.resolve,
+      actions.downloadMediaCustomFieldThumbnails.reject
     );
-    console.debug("file saved", res.path());
-
-    params.filePath = res.path();
-
-    yield put(actions.downloadMediaCustomFieldThumbnails.resolve(params));
+    try {
+      while (true) {
+        const action = yield take(channel);
+        yield put(action);
+      }
+    } catch (error) {
+      yield put(actions.downloadMediaCustomFieldFile.reject(error));
+    }
   } catch (err) {
     console.debug("### <- downloadMediaCustomFieldThumbnails error", err);
     throw err;
@@ -332,9 +339,7 @@ function* downloadAndOpenWithExternalApp(action) {
         yield put(action);
       }
     } catch (error) {
-      put(actions.downloadMediaCustomFieldFile.reject(error));
-    } finally {
-      // Optional
+      yield put(actions.downloadMediaCustomFieldFile.reject(error));
     }
 
     params.filePath = filePath;
@@ -376,9 +381,7 @@ function* downloadMediaCustomFieldFile(action) {
         yield put(action);
       }
     } catch (error) {
-      put(actions.downloadMediaCustomFieldFile.reject(error));
-    } finally {
-      // Optional
+      yield put(actions.downloadMediaCustomFieldFile.reject(error));
     }
 
     params.filePath = filePath;
@@ -419,8 +422,7 @@ function* uploadMediaCustomFieldFile(action) {
         yield put(action);
       }
     } catch (error) {
-      put(actions.uploadMediaCustomFieldFile.reject(error));
-    } finally {
+      yield put(actions.uploadMediaCustomFieldFile.reject(error));
     }
   } catch (err) {
     console.debug("### <- uploadMediaCustomFieldFile error", err);

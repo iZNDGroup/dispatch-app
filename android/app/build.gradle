@@ -144,6 +144,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':react-native-mail')
     compile (project(':react-native-device-info')) {
         exclude group: 'com.google.android.gms'
     }
@@ -169,6 +170,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-fetch-blob')
+    compile project(':react-native-pdf')
     compile project(':react-native-file-opener')
     compile project(':react-native-fs')
     compile project(':react-native-photo-view')

@@ -1,6 +1,7 @@
 import i18n from "react-native-i18n";
 import moment from "moment";
 import "moment/min/locales";
+import { appendLog } from "../services/logging";
 
 const configureLocale = () => {
   i18n.fallbacks = true;
@@ -16,7 +17,8 @@ const configureLocale = () => {
       }
     }
   }
-  // console.debug("locale", currentLocale, moment.locale());
+  console.debug("locale", currentLocale, moment.locale());
+  appendLog("locale", currentLocale, moment.locale());
 };
 
 const getLangCode = locale => {

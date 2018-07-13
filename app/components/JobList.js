@@ -7,6 +7,7 @@ import CardList from "./CardList";
 import NavigationBar from "./NavigationBar";
 import globalStyles from "../styles/global";
 import { routes } from "../navigation/config";
+import { localize } from "../util/localize";
 import * as indexSelector from "../selectors";
 import * as uiSelector from "../selectors/ui";
 import * as actions from "../actions";
@@ -56,10 +57,10 @@ class JobList extends Component {
       <View style={styles.container} {...this.props}>
         {Platform.OS === "ios" && (
           <NavigationBar
-            title="Jobs"
+            title={localize("Jobs")}
             extraBar={
               <SegmentedControlIOS
-                values={["All jobs", "Pending jobs"]}
+                values={[localize("All jobs"), localize("Pending jobs")]}
                 tintColor={globalStyles.navigationBarActionColor}
                 selectedIndex={0}
                 style={styles.segmentBar}
@@ -84,6 +85,7 @@ class JobList extends Component {
             onStatusClick={this._changeStatus}
             onToggleCustomFields={this._toggleCustomFields}
             style={styles.topMargin}
+            navigator={this.props.navigator}
           />
         </HideTabView>
       </View>

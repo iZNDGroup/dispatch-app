@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, Animated, Platform } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { localize } from "../util/localize";
 import Touchable from "./Touchable";
 import globalStyles from "../styles/global";
 
@@ -36,7 +37,7 @@ export default class TabBar extends Component {
         style={{ flex: 1 }}
         key={tabLabel.name}
         accessible
-        accessibilityLabel={tabLabel.name}
+        accessibilityLabel={localize(tabLabel.name)}
         accessibilityTraits="button"
         onPress={() => onPressHandler(page)}
       >
@@ -46,7 +47,7 @@ export default class TabBar extends Component {
             style={[styles.tabIcon, isTabActive && styles.tabIconActive]}
           />
           <Text style={[styles.tabText, isTabActive && styles.tabTextActive]}>
-            {tabLabel.name}
+            {localize(tabLabel.name)}
           </Text>
         </View>
       </Touchable>

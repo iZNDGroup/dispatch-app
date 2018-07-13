@@ -155,6 +155,7 @@ class CalendarList extends Component {
           onJobClick={this._showJob}
           onToggleCustomFields={this._toggleCustomFields}
           cardStyle={styles.fullWidth}
+          navigator={this.props.navigator}
         />
       </ParallaxScrollView>
     );

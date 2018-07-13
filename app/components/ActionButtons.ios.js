@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { localize } from "../util/localize";
 import globalStyles from "../styles/global";
 
 export default class ActionButtons extends Component {
@@ -21,7 +22,7 @@ export default class ActionButtons extends Component {
           >
             <Icon name="md-play" style={styles.icon} />
           </TouchableOpacity>
-          <Text>Start</Text>
+          <Text>{localize("Start")}</Text>
         </View>
         <View style={[styles.action, disableRoute && styles.disabled]}>
           <TouchableOpacity
@@ -31,7 +32,7 @@ export default class ActionButtons extends Component {
           >
             <Icon name="md-compass" style={styles.icon} />
           </TouchableOpacity>
-          <Text>Route</Text>
+          <Text>{localize("Route")}</Text>
         </View>
         <View style={[styles.action, disablePause && styles.disabled]}>
           <TouchableOpacity
@@ -41,7 +42,7 @@ export default class ActionButtons extends Component {
           >
             <Icon name="md-pause" style={styles.icon} />
           </TouchableOpacity>
-          <Text>Pause</Text>
+          <Text>{localize("Pause")}</Text>
         </View>
         <View style={[styles.action, disableFinish && styles.disabled]}>
           <TouchableOpacity
@@ -51,7 +52,7 @@ export default class ActionButtons extends Component {
           >
             <Icon name="md-checkbox-outline" style={styles.icon} />
           </TouchableOpacity>
-          <Text>Finish</Text>
+          <Text>{localize("Finish")}</Text>
         </View>
       </View>
     );

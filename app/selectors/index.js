@@ -153,22 +153,41 @@ export const getJobById = createSelector(
   }
 );
 
+export const getCfData = createSelector(
+  [
+    customFieldsSelector.getThumbImgUrl,
+    customFieldsSelector.getImgurl,
+    customFieldsSelector.getProgress,
+    customFieldsSelector.getUploadprogress
+  ],
+  (thumbImgUrl, imgurl, progress, uploadprogress) => {
+    const data = {
+      imgurl: imgurl,
+      thumbImgUrl: thumbImgUrl,
+      progress: progress,
+      uploadprogress: uploadprogress
+    };
+    return data;
+  }
+);
+
 const getCustomFields = (customFields, templateCustomFields) => {
-  const customFieldsArr = customFields ? Object.entries(customFields) : [];
-  return customFieldsArr.reduce((arr, [key, value]) => {
-    const templateField = templateCustomFields[key];
-    if (templateField) {
+  let arr = [];
+  for (let index in templateCustomFields) {
+    let item = templateCustomFields[index];
+    const customField = customFields[item.id];
+
+    if (item) {
       arr.push({
-        id: templateField.id,
-        type: templateField.cfType,
-        label: templateField.label,
-        options:
-          templateField.cfType === "List" ? templateField.defaultValue : null,
-        value: value
+        id: item.id,
+        type: item.cfType,
+        label: item.label,
+        options: item.cfType === "List" ? item.defaultValue : null,
+        value: customField
       });
     }
-    return arr;
-  }, []);
+  }
+  return arr;
 };
 
 export const _getJobsToday = (jobs, jobsByDate, date) => {

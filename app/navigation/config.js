@@ -9,6 +9,7 @@ import MapView from "../components/MapView";
 import LoginView from "../components/LoginView";
 import Signature from "../components/Signature";
 import CustomFieldPhotoView from "../components/CustomFieldPhotoView";
+import CustomFieldPdfView from "../components/CustomFieldPdfView";
 
 const _createTab = (id, component, name, icon) => ({
   id,
@@ -38,6 +39,8 @@ export const routes = {
   signature: onSave => _createRoute("signature", Signature, { onSave }, false),
   photoView: payload =>
     _createRoute("photoView", CustomFieldPhotoView, { ...payload }, false),
+  pdfView: payload =>
+    _createRoute("pdfView", CustomFieldPdfView, { ...payload }, false),
   jobView: (id, showActions = true) =>
     _createRoute("jobView", JobViewContainer, { id, showActions }),
   calendarList: () => _createRoute("calendarList", CalendarList),

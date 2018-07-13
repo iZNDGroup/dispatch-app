@@ -31,8 +31,14 @@ export default class CustomField extends Component {
           onSave={this._onSave}
         />
       );
-    } else if (type === "Media") {
-      Component = <CustomFieldMedia {...this.props} onSave={this._onSave} />;
+    } else if (type === "Media" || type === "Document") {
+      Component = (
+        <CustomFieldMedia
+          key={"cfmedia_" + this.props.id}
+          {...this.props}
+          onSave={this._onSave}
+        />
+      );
     }
     return <View style={styles.container}>{Component}</View>;
   }
@@ -45,7 +51,8 @@ CustomField.propTypes = {
     "Checkbox",
     "List",
     "Number",
-    "Media"
+    "Media",
+    "Document"
   ]).isRequired,
   label: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),

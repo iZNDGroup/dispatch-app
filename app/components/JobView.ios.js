@@ -6,6 +6,7 @@ import HideTabView from "./HideTabView";
 import ActionButtons from "./ActionButtons";
 import CustomField from "./CustomField";
 import Comments from "./Comments";
+import { localize } from "../util/localize";
 import globalStyles from "../styles/global";
 
 export default class JobView extends Component {
@@ -54,7 +55,7 @@ export default class JobView extends Component {
           title={title}
           subtitle={scheduledTime ? moment(scheduledTime).calendar() : null}
           leftIcon="ios-arrow-back"
-          leftText="Jobs"
+          leftText={localize("Jobs")}
           leftAction={this.props.goBack}
           extraBar={
             showActions && (
@@ -72,17 +73,17 @@ export default class JobView extends Component {
           <View style={styles.fieldsContainer}>
             {!!commentItems && (
               <View style={styles.field}>
-                <Text style={styles.fieldKey}>Notes</Text>
+                <Text style={styles.fieldKey}>{localize("Notes")}</Text>
                 <Comments commentItems={commentItems} />
               </View>
             )}
             <View style={styles.field}>
-              <Text style={styles.fieldKey}>Address</Text>
+              <Text style={styles.fieldKey}>{localize("Address")}</Text>
               <Text style={styles.fieldValue}>{location.address}</Text>
             </View>
             {!!scheduledTime && (
               <View style={[styles.field, styles.fieldNoLine]}>
-                <Text style={styles.fieldKey}>Date</Text>
+                <Text style={styles.fieldKey}>{localize("Date")}</Text>
                 <Text style={styles.fieldValue}>
                   {moment(scheduledTime).calendar()}
                 </Text>

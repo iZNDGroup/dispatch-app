@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Platform } from "react-native";
 import TouchableIcon from "./TouchableIcon";
 import JobItem from "./JobItem";
+import CustomField from "./CustomField";
 import globalStyles from "../styles/global";
 import cardStyles from "../styles/card";
 
@@ -24,12 +25,17 @@ export default class RouteCard extends Component {
     );
   };
 
-  _renderCustomField(field) {
-    // TODO: display media custom fields
+  _renderCustomField(field, routeid) {
+    field.value = field.value ? field.value.split("|")[0] : "";
     return (
-      <View style={styles.fields} key={field.id}>
-        <Text style={styles.fieldKey}>{field.label}</Text>
-        <Text style={styles.fieldValue}>{field.value}</Text>
+      <View style={styles.fieldsContainer} key={field.id}>
+        <CustomField
+          key={field.id}
+          {...field}
+          cfNamespace={"route"}
+          jobOrRouteId={routeid}
+          navigator={this.props.navigator}
+        />
       </View>
     );
   }
@@ -72,7 +78,7 @@ export default class RouteCard extends Component {
         )}
         {this.state.showCustomFields &&
           this.props.item.customFields.map(field =>
-            this._renderCustomField(field)
+            this._renderCustomField(field, this.props.item.id)
           )}
         {this.props.item.jobs.map((job, index) => this._renderJob(job, index))}
         <View style={styles.bottom} />
@@ -140,6 +146,12 @@ const styles = StyleSheet.create({
     padding: globalStyles.space * 2,
     backgroundColor: globalStyles.routeCardFieldsBackgroundColor
   },
+  field: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: globalStyles.space,
+    flex: 1
+  },
   fieldKey: {
     fontSize: globalStyles.smallerTextSize,
     color: globalStyles.primaryTextColor
@@ -147,5 +159,11 @@ const styles = StyleSheet.create({
   fieldValue: {
     fontSize: globalStyles.smallerTextSize,
     color: globalStyles.convertHex(globalStyles.primaryTextColor, 0.87)
+  },
+  fieldsContainer: {
+    backgroundColor: globalStyles.secondaryBackgroundColor,
+    padding: globalStyles.space * 2,
+    marginBottom: globalStyles.space,
+    elevation: 2
   }
 });

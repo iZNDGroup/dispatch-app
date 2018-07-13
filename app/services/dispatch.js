@@ -1,5 +1,6 @@
 import RpcClient from "./client/RpcClient";
 import { CustomFieldNamespaceMap } from "./constants";
+import { appendLog } from "./logging";
 
 const service = "Dispatch";
 
@@ -21,6 +22,7 @@ export const subscribeToUser = async (
     });
   } catch (err) {
     console.debug("### <- subscribeToUser error", err);
+    appendLog("### <- subscribeToUser error", err);
   }
 };
 
@@ -34,6 +36,7 @@ export const subscribeMetadata = async (startTime, endTime, workerId) => {
     });
   } catch (err) {
     console.debug("### <- subscribeMetadata error", err);
+    appendLog("### <- subscribeMetadata error", err);
   }
 };
 
@@ -45,6 +48,7 @@ export const unsubscribe = async subscriptionId => {
     });
   } catch (err) {
     console.debug("### <- unsubscribe error", err);
+    appendLog("### <- unsubscribe error", err);
   }
 };
 
@@ -116,6 +120,7 @@ export const updateFCMToken = async (token, deviceType) => {
     return result;
   } catch (err) {
     console.debug("### <- updateFCMToken error", err);
+    appendLog("### <- updateFCMToken error", err);
     throw err;
   }
 };
@@ -129,6 +134,7 @@ export const removeFCMToken = async token => {
     return result;
   } catch (err) {
     console.debug("### <- removeFCMToken error", err);
+    appendLog("### <- removeFCMToken error", err);
     throw err;
   }
 };

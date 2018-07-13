@@ -1,25 +1,70 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, Platform } from "react-native";
-import { connect } from "react-redux";
+import { Alert, Platform, StyleSheet, Switch, Text, View } from "react-native";
 import deviceInfo from "react-native-device-info";
+import Mailer from "react-native-mail";
+import { connect } from "react-redux";
 import * as actions from "../actions";
+import {
+  isLoggingEnabled,
+  setLoggingEnabled,
+  getLogFilePath
+} from "../services/logging";
 import * as userService from "../services/user";
+import { localize } from "../util/localize";
 import NavigationBar from "./NavigationBar";
 import Touchable from "./Touchable";
 import globalStyles from "../styles/global";
 
 class SettingsTab extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userData: {}
-    };
-  }
+  state = {
+    userData: {},
+    devMode: false,
+    enableLogging: false
+  };
+
+  _devModeCounter = 0;
 
   async componentDidMount() {
-    const userData = await userService.getUserData();
-    this.setState({ userData });
+    const [userData, enableLogging] = await Promise.all([
+      userService.getUserData(),
+      isLoggingEnabled()
+    ]);
+    this.setState({ userData, enableLogging });
   }
+
+  _handleDevModePress = () => {
+    this._devModeCounter++;
+    if (this._devModeCounter >= 7) {
+      this._devModeCounter = 0;
+      this.setState({ devMode: true });
+    }
+  };
+
+  _handleEnableLoggingChange = value => {
+    this.setState({ enableLogging: value }, () => {
+      setLoggingEnabled(value);
+    });
+  };
+
+  _handleSendLog = () => {
+    Mailer.mail(
+      {
+        recipients: ["support@gpsgate.com"],
+        subject: "Dispatch app log file",
+        body: "",
+        attachment: {
+          path: getLogFilePath(),
+          type: "text", // iOS only (automatically set on Android)
+          name: "log.txt" // iOS only (automatically set on Android)
+        }
+      },
+      error => {
+        if (error) {
+          Alert.alert("Could not send log", error);
+        }
+      }
+    );
+  };
 
   _logout = () => {
     this.props.logout();
@@ -33,30 +78,54 @@ class SettingsTab extends Component {
     const icon = Platform.OS === "android" ? "md-settings" : null;
     return (
       <View style={styles.container}>
-        <NavigationBar title="Settings" leftIcon={icon} />
+        <NavigationBar title={localize("Settings")} leftIcon={icon} />
         <View style={[styles.section, styles.noTopBorder]}>
           <View style={[styles.row, styles.noTopBorder]}>
-            <Text>Username</Text>
+            <Text>{localize("Username")}</Text>
             <Text style={styles.value}>{username}</Text>
           </View>
           <View style={styles.row}>
-            <Text>Server</Text>
+            <Text>{localize("Server")}</Text>
             <Text style={styles.value}>{baseUrl}</Text>
           </View>
           <View style={styles.row}>
-            <Text>App Version</Text>
+            <Text>{localize("App Version")}</Text>
             <Text style={styles.value}>{appVersion}</Text>
           </View>
-          <View style={styles.row}>
-            <Text>Build Number</Text>
-            <Text style={styles.value}>{buildNumber}</Text>
-          </View>
+          <Touchable onPress={this._handleDevModePress}>
+            <View style={styles.row}>
+              <Text>{localize("Build Number")}</Text>
+              <Text style={styles.value}>{buildNumber}</Text>
+            </View>
+          </Touchable>
+          {(this.state.devMode || this.state.enableLogging) && (
+            <View style={styles.row}>
+              <Text>{localize("Enable Logging")}</Text>
+              <Switch
+                onValueChange={this._handleEnableLoggingChange}
+                value={this.state.enableLogging}
+              />
+            </View>
+          )}
+          {this.state.enableLogging && (
+            <Touchable onPress={this._handleSendLog}>
+              <View style={styles.row}>
+                <Text style={styles.buttonText}>
+                  {Platform.OS === "ios"
+                    ? localize("Send log")
+                    : localize("Send log").toUpperCase()}
+                </Text>
+              </View>
+            </Touchable>
+          )}
         </View>
         <View style={styles.section}>
           <Touchable onPress={this._logout}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>
-                {Platform.OS === "ios" ? "Logout" : "LOGOUT"}
+                {Platform.OS === "ios"
+                  ? localize("Logout")
+                  : localize("Logout").toUpperCase()}
               </Text>
             </View>
           </Touchable>
@@ -109,6 +178,7 @@ const styles = StyleSheet.create({
       },
       android: {
         flexDirection: "column",
+        alignItems: "flex-start",
         paddingVertical: globalStyles.space * 2,
         paddingHorizontal: globalStyles.space
       }

@@ -4,12 +4,12 @@ import { StyleSheet, View, Text } from "react-native";
 import { connect } from "react-redux";
 import globalStyles from "../styles/global";
 import NavigationBar from "./NavigationBar";
-import PhotoView from "react-native-photo-view";
+import PdfView from "react-native-pdf";
 import * as actions from "../actions";
 import { localize } from "../util/localize";
 import customFieldStyles from "../styles/customField";
 
-class CustomFieldPhotoView extends React.Component {
+class CustomFieldPdfView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,14 +19,14 @@ class CustomFieldPhotoView extends React.Component {
 
   componentDidMount() {
     if (
-      this.props.imgurl === null ||
-      this.props.imgurl === undefined ||
-      this.props.imgurl.trim() === ""
+      this.props.url === null ||
+      this.props.url === undefined ||
+      this.props.url.trim() === ""
     ) {
       var payload = {
-        fieldid: this.props.id,
+        fieldid: this.props.fieldid,
         jobOrRouteId: this.props.jobOrRouteId.toString(),
-        filename: this.props.value,
+        filename: this.props.filename,
         cfNamespace: this.props.cfNamespace
       };
 
@@ -43,13 +43,13 @@ class CustomFieldPhotoView extends React.Component {
     return (
       <View style={styles.container}>
         <NavigationBar
-          title="Photo view"
+          title="Pdf viewer"
           leftIcon="md-arrow-back"
           leftAction={this._goBack}
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 1, flexDirection: "column" }}>
-            {!this.props.imgurl && (
+            {!url && (
               <View
                 style={{
                   height: "100%",
@@ -62,13 +62,18 @@ class CustomFieldPhotoView extends React.Component {
                 </Text>
               </View>
             )}
-            {!!this.props.imgurl && (
-              <PhotoView
+            {!!url && (
+              <PdfView
                 source={{ uri: url }}
-                minimumZoomScale={1}
-                maximumZoomScale={5}
-                androidScaleType="fitCenter"
-                onLoad={() => console.debug("image loaded")}
+                onLoadComplete={(numberOfPages, filePath) => {
+                  console.log(`number of pages: ${numberOfPages}`);
+                }}
+                onPageChanged={(page, numberOfPages) => {
+                  console.log(`current page: ${page}`);
+                }}
+                onError={error => {
+                  console.log(error);
+                }}
                 style={{
                   height: "100%",
                   width: "100%",
@@ -88,7 +93,7 @@ class CustomFieldPhotoView extends React.Component {
   };
 }
 
-CustomFieldPhotoView.contextTypes = {
+CustomFieldPdfView.contextTypes = {
   tabBar: PropTypes.object
 };
 
@@ -152,4 +157,4 @@ const mapDispatchToProps = {
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true
-})(CustomFieldPhotoView);
+})(CustomFieldPdfView);
